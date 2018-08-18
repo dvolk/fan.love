@@ -1,53 +1,43 @@
+local flux = require('flux')
+
+local Head = require('Head')
+
+local head1
+local head2
+local text1
+local text2
+
 function love.load()
-    print("console for debugging")
-    phi = 0
-    theta = 1.0
-    head_direction = 1
+   print("console for debugging")
+
+   text1 = {}
+   text1.x = -100
+   text1.y = 50
+
+   text2 = {}
+   text2.x = 900
+   text2.y = 550
+
+   head1 = Head(-200, 300, 0.51)
+   head2 = Head(1000, 300, -0.51)
+
+   flux.to(head1, 2, { x = 200, y = 300 }):ease('elasticout')
+   flux.to(head2, 2, { x = 600, y = 300 }):ease('elasticout')
+
+   flux.to(text1, 1, { x = 380, y = 50 }):delay(1)
+   flux.to(text2, 1, { x =  380, y = 550 }):delay(1)
 end
 
 function love.update(dt)
-
-    phi = phi + 0.03
-
-
-
-
-    theta = theta + (head_direction * 0.02)
-    if theta > 0.5 then
-        head_direction = -1
-    end
-    if theta < -0.5 then
-        head_direction = 1
-    end
+   head1:update(dt)
+   head2:update(dt)
+   flux.update(dt)
 end
 
 function love.draw()
-    love.graphics.print("Hi Lovely Bunny", 380, 50 )
-    -- origin
-    love.graphics.translate(410, 300)
-
-    love.graphics.rotate(theta)    
-    -- mouth
-    love.graphics.arc( "fill", 0, 100, 30, 0, math.pi )
-    -- left eye
-    love.graphics.translate(-110, -50)
-    love.graphics.rotate(phi)
-    love.graphics.circle("fill", 0, 0, 50, 8)
-    love.graphics.rotate(-phi)
-    love.graphics.translate(110, 50)
-
-    -- right eye
-    love.graphics.translate(90, -50)
-    love.graphics.rotate(-phi)
-    love.graphics.circle("fill", 0, 0, 50, 8)
-    love.graphics.rotate(phi)
-    love.graphics.translate(-90, 50)
-
-    love.graphics.line(0,0, -10,30) 
-    love.graphics.ellipse("line", 0, 0, 180, 220, 100)
-
-    love.graphics.rotate(-theta)
-    love.graphics.translate(-410, -300)
-    love.graphics.print("Good night Bunny", 380, 550 )
+   love.graphics.print("Hi Lovely Bunny", text1.x, text1.y)
+   head1:draw()
+   head2:draw()
+   love.graphics.print("Good night Bunny", text2.x, text2.y)
 
 end
